@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="card dashboard-card">
+  <div class="user-header">
+    <div class="avatar" id="avatarInitial">?</div>
+    <div class="user-info">
+      <h2 id="fullName">Loading...</h2>
+      <p id="userEmail">—</p>
+    </div>
+  </div>
+
+  <div class="info-grid" id="infoGrid"></div>
+
+  <button class="logout-btn" onclick="logout()">🚪 Sign Out</button>
+</div>
+
+<script>
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user || !localStorage.getItem('token')) {
+    window.location.href = 'index.html';
+  }
+
+  document.getElementById('avatarInitial').textContent =
+    (user.firstName?.[0] || '') + (user.lastName?.[0] || '');
+  document.getElementById('fullName').textContent =
+    `${user.firstName} ${user.lastName}`;
+  document.getElementById('userEmail').textContent = user.email;
+
+  const fields = [
+    { label: 'Username', value: '@' + user.username },
+    { label: 'Email', value: user.email },
+    { label: 'Role', value: `<span class="badge">${user.role || 'user'}</span>` },
+    { label: 'User ID', value: user._id },
+  ];
+
+  const grid = document.getElementById('infoGrid');
+  fields.forEach(f => {
+    grid.innerHTML += `
+      <div class="info-item">
+        <div class="label">${f.label}</div>
+        <div class="value">${f.value}</div>
+      </div>`;
+  });
+
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>
